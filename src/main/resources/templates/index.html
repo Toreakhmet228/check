@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiuEducation - Образовательная социальная сеть нового поколения</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: #111 !important;
+            color: #fff !important;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar, .bg-primary {
+            background: #222 !important;
+            color: #fff !important;
+        }
+        .navbar-brand, .nav-link, .dropdown-item {
+            color: #fff !important;
+        }
+        .navbar .dropdown-menu {
+            background: #222;
+        }
+        .navbar .dropdown-item:hover {
+            background: #333;
+        }
+        .footer, footer, .bg-light {
+            background: #181818 !important;
+            color: #fff !important;
+        }
+        .btn, .btn-primary, .btn-outline-primary, .btn-gradient, .btn-outline-gradient {
+            background: #fff !important;
+            color: #111 !important;
+            border: none !important;
+        }
+        .btn:hover, .btn-primary:hover, .btn-outline-primary:hover, .btn-gradient:hover, .btn-outline-gradient:hover {
+            background: #333 !important;
+            color: #fff !important;
+        }
+        .card, .feature-card, .stats-section, .conversation-card, .header-section, .search-section {
+            background: #181818 !important;
+            color: #fff !important;
+            border: none !important;
+        }
+        .feature-icon, .stats-icon {
+            background: #333 !important;
+            color: #fff !important;
+        }
+        .stat-number, .feature-title {
+            color: #fff !important;
+        }
+        .stat-label, .feature-description {
+            color: #ccc !important;
+        }
+        .animated-bg, .animated-bg::before {
+            display: none !important;
+        }
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Navbar стили */
+        .navbar {
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        /* Hero секция */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .hero-content {
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .hero-content:hover {
+            transform: translateY(-10px);
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        /* Кнопки */
+        .btn-gradient {
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-gradient:hover::before {
+            left: 100%;
+        }
+        
+        .btn-outline-gradient {
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Карточки функций */
+        .feature-card {
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-icon.posts { background: var(--secondary-gradient); }
+        .feature-icon.friends { background: var(--accent-gradient); }
+        .feature-icon.messages { background: var(--success-gradient); }
+        .feature-icon.admin { background: var(--warning-gradient); }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(10deg);
+        }
+        
+        .feature-title {
+            margin-bottom: 1rem;
+        }
+        
+        .feature-description {
+            line-height: 1.6;
+        }
+        
+        /* Статистика */
+        .stats-section {
+            padding: 3rem;
+            margin: 4rem 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            display: block;
+        }
+        
+        .stat-label {
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+        
+        /* Анимации */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .hero-content {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-mortarboard-fill me-2"></i>AiuEducation
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link text-white" href="/login">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Вход
+                    </a>
+                    <a class="nav-link text-white" href="/register">
+                        <i class="bi bi-person-plus me-1"></i>Регистрация
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="hero-content">
+                        <h1 class="hero-title">AiuEducation</h1>
+                        <p class="hero-subtitle">
+                            Образовательная социальная сеть для студентов и преподавателей 
+                            с современным дизайном, реальным временем общения и продвинутыми функциями обучения
+                        </p>
+                        <div class="d-flex gap-3 flex-wrap">
+                            <a href="/register" class="btn-gradient">
+                                <i class="bi bi-rocket-takeoff me-2"></i>Начать сейчас
+                            </a>
+                            <a href="/login" class="btn-outline-gradient">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Войти
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="text-center">
+                        <div class="animate-pulse">
+                            <i class="bi bi-people-fill" style="font-size: 15rem; color: rgba(255,255,255,0.1);"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="text-white mb-4" style="font-size: 2.5rem; font-weight: 700;">
+                    Возможности платформы
+                </h2>
+                <p class="text-white-50" style="font-size: 1.2rem;">
+                    Все что нужно для современного общения
+                </p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card">
+                        <div class="feature-icon posts">
+                            <i class="bi bi-file-post"></i>
+                        </div>
+                        <h4 class="feature-title">Посты и Медиа</h4>
+                        <p class="feature-description">
+                            Делитесь мыслями, фото и видео. Лайки, комментарии и репосты
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card">
+                        <div class="feature-icon friends">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h4 class="feature-title">Друзья</h4>
+                        <p class="feature-description">
+                            Находите друзей, отправляйте запросы и общайтесь в реальном времени
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card">
+                        <div class="feature-icon messages">
+                            <i class="bi bi-chat-dots"></i>
+                        </div>
+                        <h4 class="feature-title">Чат и Звонки</h4>
+                        <p class="feature-description">
+                            WebSocket чат, видеозвонки и уведомления о наборе текста
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-card">
+                        <div class="feature-icon admin">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h4 class="feature-title">Модерация</h4>
+                        <p class="feature-description">
+                            Система ролей, админ-панель и инструменты модерации контента
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="stats-section" data-aos="fade-up">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-item">
+                            <span class="stat-number" data-count="1000">0</span>
+                            <div class="stat-label">Активных пользователей</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-item">
+                            <span class="stat-number" data-count="5000">0</span>
+                            <div class="stat-label">Постов создано</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-item">
+                            <span class="stat-number" data-count="10000">0</span>
+                            <div class="stat-label">Сообщений отправлено</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-item">
+                            <span class="stat-number" data-count="99">0</span>
+                            <div class="stat-label">% Время работы</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center" data-aos="fade-up">
+                <h2 class="text-white mb-4" style="font-size: 2.5rem; font-weight: 700;">
+                    Готовы присоединиться?
+                </h2>
+                <p class="text-white-50 mb-4" style="font-size: 1.2rem;">
+                    Создайте аккаунт и начните общаться уже сегодня
+                </p>
+                <a href="/register" class="btn-gradient" style="font-size: 1.2rem; padding: 20px 40px;">
+                    <i class="bi bi-rocket-takeoff me-2"></i>Присоединиться бесплатно
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4 mt-5">
+        <div class="container">
+            <div class="text-center">
+                <p class="text-white-50 mb-0">
+                    © 2024 AiuEducation. Создано с ❤️ для образования
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // Инициализация AOS
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+        
+        // Анимация счетчиков
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-count'));
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    counter.textContent = Math.floor(current);
+                }, 16);
+            });
+        }
+        
+        // Запуск анимации счетчиков при скролле
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+        
+        observer.observe(document.querySelector('.stats-section'));
+        
+        // Параллакс эффект для navbar
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(102, 126, 234, 0.9)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.1)';
+            }
+        });
+    </script>
+</body>
+</html> 

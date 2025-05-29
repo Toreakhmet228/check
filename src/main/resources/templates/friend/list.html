@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои друзья - AiuEducation</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #1a1a1a; /* Dark background */
+            --secondary-color: #333; /* Slightly lighter dark for cards/nav */
+            --accent-color: #555; /* Accent for highlights/buttons */
+            --card-bg: rgba(255, 255, 255, 0.05); /* Semi-transparent dark for cards */
+            --text-color: #e0e0e0; /* Light text */
+            --text-muted: #a0a0a0; /* Lighter muted text */
+            --border-color: rgba(255, 255, 255, 0.1); /* Light border */
+            --online-color: #4CAF50; /* Keep online indicator green */
+            --danger-color: #ff6b6b; /* Keep danger red */
+        }
+        
+        body {
+            background-color: var(--primary-color);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+        }
+        
+        /* Убираем анимированный фон */
+        .animated-bg {
+            display: none;
+        }
+        
+        /* Navbar */
+        .navbar {
+            background-color: var(--secondary-color) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: #ffffff !important; /* Use white */
+        }
+        
+        .nav-link {
+            color: var(--text-muted) !important;
+        }
+        
+        .nav-link.active,
+        .nav-link:hover {
+            color: #ffffff !important; /* Use white */
+        }
+        
+        /* Header Section */
+        .header-section {
+            background-color: var(--secondary-color);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Stats Cards */
+        .stats-card {
+            background-color: var(--secondary-color);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            height: 100%;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stats-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.2rem;
+            color: white;
+            background-color: var(--accent-color);
+        }
+        
+        .stats-icon.friends { background-color: var(--accent-color); }
+        .stats-icon.requests { background-color: var(--accent-color); }
+        .stats-icon.online { background-color: var(--online-color); }
+        
+        .stats-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white; /* Use white */
+            margin-bottom: 0.5rem;
+        }
+        
+        .stats-label {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        /* Friend Cards */
+        .friend-card {
+            background-color: var(--secondary-color);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .friend-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent-color);
+        }
+        
+        .friend-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: var(--accent-color); /* Use accent color */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white; /* Use white */
+            margin: 0 auto 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .online-indicator {
+            width: 15px;
+            height: 15px;
+            background-color: var(--online-color); /* Keep green */
+            border-radius: 50%;
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            border: 2px solid var(--secondary-color);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .friend-name {
+            color: white; /* Use white */
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.4rem;
+            text-align: center;
+        }
+        
+        .friend-role {
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 0.8rem;
+            font-size: 0.8rem;
+        }
+        
+        .friend-since {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            text-align: center;
+            margin-bottom: 1.2rem;
+        }
+        
+        /* Action Buttons */
+        .btn-message {
+            background-color: var(--accent-color);
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            color: white;
+            font-weight: 600;
+            width: 100%;
+            margin-bottom: 0.4rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-message:hover {
+            background-color: #666;
+            transform: translateY(-2px);
+            color: white;
+        }
+        
+        .btn-remove {
+            background: transparent;
+            border: 1px solid var(--danger-color);
+            border-radius: 5px;
+            padding: 6px 14px;
+            color: var(--danger-color);
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-remove:hover {
+            background-color: rgba(255, 107, 107, 0.1);
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+            transform: translateY(-2px);
+        }
+        
+        /* Admin Badge */
+        .admin-badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            position: absolute;
+            top: 8px;
+            right: 8px;
+        }
+        
+        /* Search and Filter */
+        .search-filter-section {
+            background-color: var(--secondary-color);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .search-input, .form-select {
+            background-color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: var(--text-color);
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus, .form-select:focus {
+            background-color: #252525;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(85, 85, 85, 0.5);
+            color: var(--text-color);
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e0e0e0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg>");
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border-color: var(--border-color);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+            color: var(--accent-color);
+        }
+        
+        /* Quick Actions */
+        .quick-action-btn {
+            background-color: var(--accent-color);
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .quick-action-btn:hover {
+            background-color: #666;
+            transform: translateY(-2px);
+            color: white;
+        }
+        
+        .quick-action-btn.secondary {
+            background-color: var(--secondary-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+        
+        .quick-action-btn.secondary:hover {
+            background-color: #252525;
+            border-color: var(--accent-color);
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-section, .search-filter-section, .friend-card {
+                margin-left: 0;
+                margin-right: 0;
+                border-radius: 10px;
+            }
+            
+            .quick-actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-mortarboard-fill"></i> AiuEducation
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link text-white" href="/posts/feed">
+                    <i class="bi bi-house-fill"></i> Лента
+                </a>
+                <a class="nav-link active text-white" href="/friends">
+                    <i class="bi bi-people"></i> Друзья
+                </a>
+                <a class="nav-link text-white" href="/messages">
+                    <i class="bi bi-chat-dots"></i> Сообщения
+                </a>
+                <a class="nav-link text-white" href="/friends/search">
+                    <i class="bi bi-search"></i> Поиск
+                </a>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i> 
+                        <span th:text="${currentUser.fullName}">Пользователь</span>
+                        <span class="badge bg-danger ms-1" th:if="${currentUser.admin}">Админ</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/profile">
+                            <i class="bi bi-person"></i> Профиль
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="d-inline">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="bi bi-box-arrow-right"></i> Выйти
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Flash Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert" data-aos="fade-down">
+            <i class="bi bi-check-circle"></i> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert" data-aos="fade-down">
+            <i class="bi bi-exclamation-triangle"></i> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Header Section -->
+        <div class="header-section" data-aos="fade-up">
+            <div class="text-center mb-4">
+                <h2 class="text-white mb-3" style="font-weight: 700;">
+                    <i class="bi bi-people me-2"></i>Мои друзья
+                </h2>
+                <p class="text-white-50">Управляйте своими контактами и общайтесь с друзьями</p>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions justify-content-center">
+                <a href="/friends/search" class="quick-action-btn">
+                    <i class="bi bi-search me-2"></i>Найти друзей
+                </a>
+                <button class="quick-action-btn secondary" onclick="toggleRequests()">
+                    <i class="bi bi-person-plus me-2"></i>Заявки в друзья
+                    <span th:if="${pendingRequests.size() > 0}" class="badge bg-light text-dark ms-2" th:text="${pendingRequests.size()}">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row mb-4">
+            <div class="col-lg-4 col-md-6 mb-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="stats-card">
+                    <div class="stats-icon friends">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="stats-number" th:text="${friendsCount}">0</div>
+                    <div class="stats-label">Друзей</div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="stats-card">
+                    <div class="stats-icon requests">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+                    <div class="stats-number" th:text="${pendingRequests.size()}">0</div>
+                    <div class="stats-label">Заявок</div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="stats-card">
+                    <div class="stats-icon online">
+                        <i class="bi bi-circle-fill"></i>
+                    </div>
+                    <div class="stats-number" th:text="${friendsCount > 0 ? (friendsCount * 0.3).intValue() : 0}">0</div>
+                    <div class="stats-label">Онлайн</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="search-filter-section" data-aos="fade-up">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <input type="text" 
+                           class="form-control search-input" 
+                           id="friendSearch"
+                           placeholder="Поиск среди друзей...">
+                </div>
+                <div class="col-md-4 mt-3 mt-md-0">
+                    <select class="form-select search-input" id="roleFilter">
+                        <option value="">Все роли</option>
+                        <option value="ADMIN">Администраторы</option>
+                        <option value="STUDENT">Студенты</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Friend Requests Section -->
+        <div class="search-filter-section" id="requestsSection" style="display: none;" data-aos="fade-up">
+            <h5 class="text-white mb-3">
+                <i class="bi bi-person-plus me-2"></i>Заявки в друзья
+            </h5>
+            <div th:if="${pendingRequests != null and !pendingRequests.empty}">
+                <div th:each="request : ${pendingRequests}" class="d-flex align-items-center justify-content-between p-3 mb-2" 
+                     style="background: rgba(255, 255, 255, 0.1); border-radius: 15px;">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person-circle fs-3 text-white me-3"></i> <!-- Use text-white -->
+                        <div>
+                            <h6 class="text-white mb-0" th:text="${request.sender.fullName}">Имя отправителя</h6> <!-- Use text-white -->
+                            <small class="text-white-50" th:text="${request.sender.role.displayName}">Роль</small> <!-- Use text-white-50 for muted effect -->
+                        </div>
+                    </div>
+                    <div>
+                        <form th:action="@{/friends/accept/{id}(id=${request.id})}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-success btn-sm me-2">
+                                <i class="bi bi-check"></i> Принять
+                            </button>
+                        </form>
+                        <form th:action="@{/friends/reject/{id}(id=${request.id})}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="bi bi-x"></i> Отклонить
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${pendingRequests == null or pendingRequests.empty}" class="text-center py-4">
+                <i class="bi bi-inbox fs-1 text-white-50"></i> <!-- Use text-white-50 -->
+                <p class="text-white-50 mt-2">Нет новых заявок в друзья</p> <!-- Use text-white-50 -->
+            </div>
+        </div>
+
+        <!-- Friends List -->
+        <div class="row" id="friendsList">
+            <div th:if="${friendsCount > 0}">
+                <div th:each="friend, iterStat : ${friends}" 
+                     class="col-lg-4 col-md-6 mb-4 friend-item" 
+                     data-aos="fade-up" 
+                     th:attr="data-aos-delay=${iterStat.index * 100}"
+                     th:data-name="${friend.fullName.toLowerCase()}"
+                     th:data-role="${friend.role.name()}">
+                    <div class="friend-card">
+                        <!-- Admin Badge -->
+                        <div th:if="${friend.admin}" class="admin-badge">
+                            <i class="bi bi-shield-check me-1"></i>Админ
+                        </div>
+                        
+                        <!-- Friend Avatar -->
+                        <div class="friend-avatar">
+                            <i class="bi bi-person-fill"></i>
+                            <!-- Online Indicator (можно добавить логику проверки онлайн статуса) -->
+                            <div class="online-indicator" th:if="${iterStat.index % 3 == 0}"></div>
+                        </div>
+                        
+                        <!-- Friend Info -->
+                        <h5 class="friend-name" th:text="${friend.fullName}">Имя друга</h5>
+                        <p class="friend-role">
+                            <i class="bi bi-person-badge me-1"></i>
+                            <span th:text="${friend.role.displayName}">Роль</span>
+                        </p>
+                        
+                        <div class="friend-since">
+                            <i class="bi bi-calendar me-1"></i>
+                            Друзья с <span th:text="${#temporals.format(friend.createdAt, 'dd.MM.yyyy')}">дата</span>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div>
+                            <a th:href="@{/messages/conversation/{id}(id=${friend.id})}" class="btn btn-message">
+                                <i class="bi bi-chat-dots me-2"></i>Написать
+                            </a>
+                            
+                            <form th:action="@{/friends/remove/{id}(id=${friend.id})}" method="post" class="remove-friend-form">
+                                <button type="submit" class="btn btn-remove" onclick="return confirm('Удалить из друзей?')">
+                                    <i class="bi bi-person-dash me-2"></i>Удалить
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Empty State -->
+            <div th:if="${friendsCount == 0}" class="col-12">
+                <div class="empty-state" data-aos="fade-up">
+                    <div class="empty-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h4 class="text-white mb-3">У вас пока нет друзей</h4> <!-- Use text-white -->
+                    <p class="text-white-50 mb-4"> <!-- Use text-white-50 -->
+                        Найдите интересных людей и добавьте их в друзья
+                    </p>
+                    <a href="/friends/search" class="quick-action-btn">
+                        <i class="bi bi-search me-2"></i>Найти друзей
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // Глобальная функция для переключения отображения заявок в друзья
+        function toggleRequests() {
+            const requestsSection = document.getElementById('requestsSection');
+            if (requestsSection.style.display === 'none') {
+                requestsSection.style.display = 'block';
+                requestsSection.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                requestsSection.style.display = 'none';
+            }
+        }
+    </script>
+    
+    <script>
+        // Инициализация AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+        
+        // Поиск и фильтрация друзей
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('friendSearch');
+            const roleFilter = document.getElementById('roleFilter');
+            const friendItems = document.querySelectorAll('.friend-item');
+            
+            function filterFriends() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedRole = roleFilter.value;
+                
+                friendItems.forEach(item => {
+                    const name = item.getAttribute('data-name');
+                    const role = item.getAttribute('data-role');
+                    
+                    const matchesSearch = name.includes(searchTerm);
+                    const matchesRole = !selectedRole || role === selectedRole;
+                    
+                    if (matchesSearch && matchesRole) {
+                        item.style.display = 'block';
+                        item.style.animation = 'fadeInUp 0.5s ease-out';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // Показать/скрыть сообщение "не найдено"
+                const visibleItems = Array.from(friendItems).filter(item => item.style.display !== 'none');
+                updateEmptyState(visibleItems.length === 0 && friendItems.length > 0);
+            }
+            
+            function updateEmptyState(show) {
+                let emptyMessage = document.getElementById('searchEmptyState');
+                
+                if (show && !emptyMessage) {
+                    emptyMessage = document.createElement('div');
+                    emptyMessage.id = 'searchEmptyState';
+                    emptyMessage.className = 'col-12';
+                    emptyMessage.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="bi bi-search"></i>
+                            </div>
+                            <h4 class="text-white mb-3">Друзья не найдены</h4>
+                            <p class="text-white-50">
+                                Попробуйте изменить критерии поиска
+                            </p>
+                        </div>
+                    `;
+                    document.getElementById('friendsList').appendChild(emptyMessage);
+                } else if (!show && emptyMessage) {
+                    emptyMessage.remove();
+                }
+            }
+            
+            searchInput.addEventListener('input', filterFriends);
+            roleFilter.addEventListener('change', filterFriends);
+            
+            // Обработка форм удаления друзей
+            document.querySelectorAll('.remove-friend-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const button = this.querySelector('button');
+                    button.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Удаление...';
+                    button.disabled = true;
+                });
+            });
+            
+            // Анимация при наведении на карточки
+            document.querySelectorAll('.friend-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+            
+            // Анимация счетчиков
+            function animateCounters() {
+                const counters = document.querySelectorAll('.stats-number');
+                
+                counters.forEach(counter => {
+                    const target = parseInt(counter.textContent);
+                    const duration = 1500;
+                    const step = target / (duration / 16);
+                    let current = 0;
+                    
+                    const timer = setInterval(() => {
+                        current += step;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        counter.textContent = Math.floor(current);
+                    }, 16);
+                });
+            }
+            
+            // Запуск анимации счетчиков при загрузке
+            setTimeout(animateCounters, 500);
+        });
+        
+        // Параллакс эффект для фона - Удален в черно-белой теме
+        // window.addEventListener('scroll', () => {
+        //     const scrolled = window.pageYOffset;
+        //     const parallax = document.querySelector('.animated-bg');
+        //     const speed = scrolled * 0.4;
+        //     parallax.style.transform = `translateY(${speed}px)`;
+        // });
+        
+        // Добавление эффекта пульсации для онлайн индикаторов
+        document.querySelectorAll('.online-indicator').forEach(indicator => {
+            setInterval(() => {
+                indicator.style.animation = 'none';
+                setTimeout(() => {
+                    indicator.style.animation = 'pulse 2s infinite';
+                }, 10);
+            }, 5000);
+        });
+    </script>
+</body>
+</html> 

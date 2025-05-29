@@ -1,0 +1,419 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.example:demo >--------------------------
+[INFO] Building demo 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.5.0:run (default-cli) > test-compile @ demo >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ demo ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 11 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.0:compile (default-compile) @ demo ---
+[INFO] Recompiling the module because of added or removed source files.
+[INFO] Compiling 23 source files with javac [debug parameters release 17] to target/classes
+[INFO] /home/laptop/Downloads/demo (2)/demo/src/main/java/com/example/demo/config/SecurityConfig.java: /home/laptop/Downloads/demo (2)/demo/src/main/java/com/example/demo/config/SecurityConfig.java uses or overrides a deprecated API.
+[INFO] /home/laptop/Downloads/demo (2)/demo/src/main/java/com/example/demo/config/SecurityConfig.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ demo ---
+[INFO] skip non existing resourceDirectory /home/laptop/Downloads/demo (2)/demo/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ demo ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug parameters release 17] to target/test-classes
+[INFO] 
+[INFO] <<< spring-boot:3.5.0:run (default-cli) < test-compile @ demo <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.5.0:run (default-cli) @ demo ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.0)
+
+2025-05-28T23:39:35.673+05:00  INFO 863689 --- [demo] [           main] com.example.demo.DemoApplication         : Starting DemoApplication using Java 21.0.7 with PID 863689 (/home/laptop/Downloads/demo (2)/demo/target/classes started by laptop in /home/laptop/Downloads/demo (2)/demo)
+2025-05-28T23:39:35.674+05:00 DEBUG 863689 --- [demo] [           main] com.example.demo.DemoApplication         : Running with Spring Boot v3.5.0, Spring v6.2.7
+2025-05-28T23:39:35.674+05:00  INFO 863689 --- [demo] [           main] com.example.demo.DemoApplication         : No active profile set, falling back to 1 default profile: "default"
+2025-05-28T23:39:36.036+05:00  INFO 863689 --- [demo] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-28T23:39:36.070+05:00  INFO 863689 --- [demo] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 29 ms. Found 5 JPA repository interfaces.
+2025-05-28T23:39:36.391+05:00  INFO 863689 --- [demo] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2025-05-28T23:39:36.402+05:00  INFO 863689 --- [demo] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-05-28T23:39:36.402+05:00  INFO 863689 --- [demo] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.41]
+2025-05-28T23:39:36.427+05:00  INFO 863689 --- [demo] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-05-28T23:39:36.428+05:00  INFO 863689 --- [demo] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 733 ms
+2025-05-28T23:39:36.552+05:00  INFO 863689 --- [demo] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-28T23:39:36.575+05:00  INFO 863689 --- [demo] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.15.Final
+2025-05-28T23:39:36.593+05:00  INFO 863689 --- [demo] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-28T23:39:36.726+05:00  INFO 863689 --- [demo] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-28T23:39:36.741+05:00  INFO 863689 --- [demo] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-28T23:39:36.830+05:00  INFO 863689 --- [demo] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:vkontakte user=SA
+2025-05-28T23:39:36.831+05:00  INFO 863689 --- [demo] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-05-28T23:39:36.843+05:00  WARN 863689 --- [demo] [           main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-28T23:39:36.854+05:00  INFO 863689 --- [demo] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-28T23:39:37.367+05:00  INFO 863689 --- [demo] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: 
+    drop table if exists comments cascade 
+Hibernate: 
+    drop table if exists friend_requests cascade 
+Hibernate: 
+    drop table if exists messages cascade 
+Hibernate: 
+    drop table if exists posts cascade 
+Hibernate: 
+    drop table if exists user_friends cascade 
+Hibernate: 
+    drop table if exists users cascade 
+Hibernate: 
+    create table comments (
+        author_id bigint not null,
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        post_id bigint not null,
+        updated_at timestamp(6),
+        content TEXT not null,
+        primary key (id)
+    )
+Hibernate: 
+    create table friend_requests (
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        receiver_id bigint not null,
+        sender_id bigint not null,
+        updated_at timestamp(6),
+        status enum ('ACCEPTED','PENDING','REJECTED'),
+        primary key (id)
+    )
+Hibernate: 
+    create table messages (
+        is_read boolean not null,
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        receiver_id bigint not null,
+        sender_id bigint not null,
+        content TEXT not null,
+        primary key (id)
+    )
+Hibernate: 
+    create table posts (
+        highlighted boolean not null,
+        likes_count integer not null,
+        pinned boolean not null,
+        author_id bigint not null,
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        updated_at timestamp(6),
+        content TEXT not null,
+        image_url varchar(255),
+        primary key (id)
+    )
+Hibernate: 
+    create table user_friends (
+        friend_id bigint not null,
+        user_id bigint not null,
+        primary key (friend_id, user_id)
+    )
+Hibernate: 
+    create table users (
+        enabled boolean not null,
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        username varchar(50) not null unique,
+        avatar_url varchar(255),
+        bio varchar(255),
+        email varchar(255) not null unique,
+        first_name varchar(255) not null,
+        last_name varchar(255) not null,
+        password varchar(255) not null,
+        role enum ('ADMIN','STUDENT'),
+        primary key (id)
+    )
+Hibernate: 
+    alter table if exists comments 
+       add constraint FKn2na60ukhs76ibtpt9burkm27 
+       foreign key (author_id) 
+       references users
+Hibernate: 
+    alter table if exists comments 
+       add constraint FKh4c7lvsc298whoyd4w9ta25cr 
+       foreign key (post_id) 
+       references posts
+Hibernate: 
+    alter table if exists friend_requests 
+       add constraint FKtcmqalc5v4qdt1slgcsa544i5 
+       foreign key (receiver_id) 
+       references users
+Hibernate: 
+    alter table if exists friend_requests 
+       add constraint FKcchlh48b4347amfvmke793bg7 
+       foreign key (sender_id) 
+       references users
+Hibernate: 
+    alter table if exists messages 
+       add constraint FKt05r0b6n0iis8u7dfna4xdh73 
+       foreign key (receiver_id) 
+       references users
+Hibernate: 
+    alter table if exists messages 
+       add constraint FK4ui4nnwntodh6wjvck53dbk9m 
+       foreign key (sender_id) 
+       references users
+Hibernate: 
+    alter table if exists posts 
+       add constraint FK6xvn0811tkyo3nfjk2xvqx6ns 
+       foreign key (author_id) 
+       references users
+Hibernate: 
+    alter table if exists user_friends 
+       add constraint FK11y5boh1e7gh60rdqixyetv3x 
+       foreign key (friend_id) 
+       references users
+Hibernate: 
+    alter table if exists user_friends 
+       add constraint FKk08ugelrh9cea1oew3hgxryw2 
+       foreign key (user_id) 
+       references users
+2025-05-28T23:39:37.404+05:00  INFO 863689 --- [demo] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-28T23:39:37.579+05:00  INFO 863689 --- [demo] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-05-28T23:39:38.936+05:00  WARN 863689 --- [demo] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-28T23:39:38.956+05:00  INFO 863689 --- [demo] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2025-05-28T23:39:39.071+05:00  INFO 863689 --- [demo] [           main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2025-05-28T23:39:39.071+05:00  WARN 863689 --- [demo] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-05-28T23:39:39.133+05:00 DEBUG 863689 --- [demo] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CsrfFilter, LogoutFilter, UsernamePasswordAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-05-28T23:39:39.252+05:00  INFO 863689 --- [demo] [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:vkontakte'
+2025-05-28T23:39:39.298+05:00  INFO 863689 --- [demo] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/'
+2025-05-28T23:39:39.303+05:00  INFO 863689 --- [demo] [           main] com.example.demo.DemoApplication         : Started DemoApplication in 3.845 seconds (process running for 4.0)
+2025-05-28T23:39:39.305+05:00  INFO 863689 --- [demo] [           main] c.example.demo.config.DataInitializer    : Инициализация тестовых данных...
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.avatar_url,
+        u1_0.bio,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.first_name,
+        u1_0.last_name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.id 
+    from
+        users u1_0 
+    where
+        u1_0.username=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id 
+    from
+        users u1_0 
+    where
+        u1_0.email=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    insert 
+    into
+        users
+        (avatar_url, bio, created_at, email, enabled, first_name, last_name, password, role, username, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2025-05-28T23:39:39.477+05:00  INFO 863689 --- [demo] [           main] c.example.demo.config.DataInitializer    : Создан администратор: admin
+Hibernate: 
+    insert 
+    into
+        posts
+        (author_id, content, created_at, highlighted, image_url, likes_count, pinned, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.author_id,
+        p1_0.content,
+        p1_0.created_at,
+        p1_0.highlighted,
+        p1_0.image_url,
+        p1_0.likes_count,
+        p1_0.pinned,
+        p1_0.updated_at 
+    from
+        posts p1_0 
+    where
+        p1_0.id=?
+Hibernate: 
+    update
+        posts 
+    set
+        author_id=?,
+        content=?,
+        created_at=?,
+        highlighted=?,
+        image_url=?,
+        likes_count=?,
+        pinned=?,
+        updated_at=? 
+    where
+        id=?
+2025-05-28T23:39:39.494+05:00  INFO 863689 --- [demo] [           main] c.example.demo.config.DataInitializer    : Создан приветственный пост от администратора
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.avatar_url,
+        u1_0.bio,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.first_name,
+        u1_0.last_name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.id 
+    from
+        users u1_0 
+    where
+        u1_0.username=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id 
+    from
+        users u1_0 
+    where
+        u1_0.email=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    insert 
+    into
+        users
+        (avatar_url, bio, created_at, email, enabled, first_name, last_name, password, role, username, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2025-05-28T23:39:39.565+05:00  INFO 863689 --- [demo] [           main] c.example.demo.config.DataInitializer    : Создан тестовый ученик: student1
+Hibernate: 
+    insert 
+    into
+        posts
+        (author_id, content, created_at, highlighted, image_url, likes_count, pinned, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, default)
+2025-05-28T23:39:39.566+05:00  INFO 863689 --- [demo] [           main] c.example.demo.config.DataInitializer    : Создан пост от тестового ученика
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.avatar_url,
+        u1_0.bio,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.first_name,
+        u1_0.last_name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.id 
+    from
+        users u1_0 
+    where
+        u1_0.username=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id 
+    from
+        users u1_0 
+    where
+        u1_0.email=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    insert 
+    into
+        users
+        (avatar_url, bio, created_at, email, enabled, first_name, last_name, password, role, username, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+2025-05-28T23:39:39.638+05:00  INFO 863689 --- [demo] [           main] c.example.demo.config.DataInitializer    : Создан второй тестовый ученик: student2
+Hibernate: 
+    insert 
+    into
+        posts
+        (author_id, content, created_at, highlighted, image_url, likes_count, pinned, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, default)
+2025-05-28T23:39:39.639+05:00  INFO 863689 --- [demo] [           main] c.example.demo.config.DataInitializer    : Создан пост от второго тестового ученика
+2025-05-28T23:39:39.639+05:00  INFO 863689 --- [demo] [           main] c.example.demo.config.DataInitializer    : Инициализация тестовых данных завершена
+2025-05-28T23:39:39.639+05:00  INFO 863689 --- [demo] [           main] c.example.demo.config.DataInitializer    : Для входа используйте:
+2025-05-28T23:39:39.639+05:00  INFO 863689 --- [demo] [           main] c.example.demo.config.DataInitializer    : Администратор - логин: admin, пароль: admin123
+2025-05-28T23:39:39.639+05:00  INFO 863689 --- [demo] [           main] c.example.demo.config.DataInitializer    : Ученик 1 - логин: student1, пароль: student123
+2025-05-28T23:39:39.639+05:00  INFO 863689 --- [demo] [           main] c.example.demo.config.DataInitializer    : Ученик 2 - логин: student2, пароль: student123
+2025-05-28T23:40:01.947+05:00  INFO 863689 --- [demo] [nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-05-28T23:40:01.948+05:00  INFO 863689 --- [demo] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-05-28T23:40:01.948+05:00  INFO 863689 --- [demo] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-05-28T23:40:01.957+05:00 DEBUG 863689 --- [demo] [nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-05-28T23:40:01.964+05:00 DEBUG 863689 --- [demo] [nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /
+2025-05-28T23:40:02.068+05:00 DEBUG 863689 --- [demo] [nio-8081-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-05-28T23:40:06.508+05:00 DEBUG 863689 --- [demo] [nio-8081-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /login
+2025-05-28T23:40:06.509+05:00 DEBUG 863689 --- [demo] [nio-8081-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /login
+2025-05-28T23:40:06.569+05:00 DEBUG 863689 --- [demo] [nio-8081-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-05-28T23:40:10.302+05:00 DEBUG 863689 --- [demo] [nio-8081-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /register
+2025-05-28T23:40:10.305+05:00 DEBUG 863689 --- [demo] [nio-8081-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /register
+2025-05-28T23:40:10.333+05:00 DEBUG 863689 --- [demo] [nio-8081-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-05-28T23:41:10.713+05:00 DEBUG 863689 --- [demo] [nio-8081-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-05-28T23:41:10.713+05:00 DEBUG 863689 --- [demo] [nio-8081-exec-7] o.s.security.web.FilterChainProxy        : Secured GET /
+2025-05-28T23:41:10.715+05:00 DEBUG 863689 --- [demo] [nio-8081-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-05-28T23:50:30.690+05:00  INFO 863689 --- [demo] [ionShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-05-28T23:50:30.699+05:00  INFO 863689 --- [demo] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-05-28T23:50:30.705+05:00  INFO 863689 --- [demo] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+Hibernate: 
+    drop table if exists comments cascade 
+Hibernate: 
+    drop table if exists friend_requests cascade 
+Hibernate: 
+    drop table if exists messages cascade 
+Hibernate: 
+    drop table if exists posts cascade 
+Hibernate: 
+    drop table if exists user_friends cascade 
+Hibernate: 
+    drop table if exists users cascade 
+2025-05-28T23:50:30.713+05:00  INFO 863689 --- [demo] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-05-28T23:50:30.716+05:00  INFO 863689 --- [demo] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пост - AiuEducation</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #1a1a1a; /* Dark background */
+            --secondary-color: #333; /* Slightly lighter dark for cards/nav */
+            --accent-color: #555; /* Accent for highlights/buttons */
+            --card-bg: rgba(255, 255, 255, 0.05); /* Semi-transparent dark for cards */
+            --text-color: #e0e0e0; /* Light text */
+            --text-muted: #a0a0a0; /* Lighter muted text */
+            --border-color: rgba(255, 255, 255, 0.1); /* Light border */
+            --like-color: #ff6b6b; /* Keep like color distinct */
+            --warning-color: #ffc107; /* Keep warning color for alerts/badges */
+            --danger-color: #dc3545; /* Keep danger color for admin/delete */
+            --info-color: #17a2b8; /* Keep info color for alerts */
+        }
+
+        body {
+            background-color: var(--primary-color);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--secondary-color) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #ffffff !important;
+        }
+
+        .nav-link {
+            color: var(--text-muted) !important;
+        }
+
+        .nav-link.active,
+        .nav-link:hover {
+            color: #ffffff !important;
+        }
+
+        /* Card styles */
+        .card {
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+             background-color: var(--accent-color) !important; /* Use accent color */
+             color: white !important; /* Use white */
+             border-bottom: 1px solid var(--border-color);
+             border-top-left-radius: 10px !important;
+             border-top-right-radius: 10px !important;
+        }
+        
+        .card-body {
+            color: var(--text-color);
+        }
+
+        /* Post specific styles */
+        .admin-post {
+            border-left: 4px solid var(--danger-color);
+            background-color: #2a1a1a; /* Darker shade for admin post background */
+        }
+        
+        .pinned-post {
+            border-top: 3px solid var(--warning-color);
+            background-color: #2a2a1a; /* Darker shade for pinned post background */
+        }
+        
+        .highlighted-post {
+            box-shadow: 0 0 10px rgba(85, 85, 85, 0.5);
+        }
+        
+        .post-content div {
+            color: var(--text-color);
+        }
+
+        .post-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        /* Comment Section */
+        .comments-section {
+            margin-top: 2rem;
+        }
+        
+        .comment-card {
+            border-left: 3px solid var(--accent-color);
+            background-color: var(--card-bg);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            color: var(--text-color);
+        }
+
+        .comment-card:hover {
+            border-left-color: #666;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: var(--accent-color); /* Use accent color */
+            color: white; /* Use white */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .admin-comment .comment-avatar {
+            background-color: var(--danger-color);
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #ffffff; /* Use white */
+            text-decoration: none;
+        }
+
+        .comment-author:hover {
+            text-decoration: underline;
+        }
+
+        .comment-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .comment-content {
+            padding-left: 50px;
+            color: var(--text-color);
+        }
+
+        .comment-actions {
+            margin-top: 10px;
+            padding-left: 50px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .comment-actions button {
+            font-size: 0.8rem;
+        }
+
+        .force-added {
+            font-style: italic;
+            color: var(--warning-color); /* Keep warning color */
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        /* Buttons */
+        .btn-outline-secondary {
+            color: var(--text-muted);
+            border-color: var(--border-color);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color); /* Use accent color */
+            border-color: var(--accent-color); /* Use accent color */
+            color: white;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #666; /* Darker accent */
+            border-color: #666; /* Darker accent */
+            transform: translateY(-2px);
+            color: white;
+        }
+
+         .btn-warning {
+            background-color: var(--warning-color); /* Keep warning color */
+            border-color: var(--warning-color); /* Keep warning color */
+            color: black;
+        }
+        
+        .btn-warning:hover {
+            background-color: darken(var(--warning-color), 10%); /* Darken warning */
+            border-color: darken(var(--warning-color), 10%); /* Darken warning */
+            color: black;
+        }
+        
+        .btn-outline-danger {
+            color: var(--danger-color);
+            border-color: var(--border-color);
+        }
+        
+        .btn-outline-danger:hover {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        /* Alerts */
+        .alert-success {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border-color: rgba(40, 167, 69, 0.3);
+        }
+
+        .alert-danger {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: var(--danger-color);
+            border-color: rgba(220, 53, 69, 0.3);
+        }
+
+        .alert-warning {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: var(--warning-color);
+            border-color: rgba(255, 193, 7, 0.3);
+        }
+        
+        .alert-info {
+            background-color: rgba(23, 162, 184, 0.2);
+            color: var(--info-color);
+            border-color: rgba(23, 162, 184, 0.3);
+        }
+        
+        .alert .btn-close {
+            color: inherit;
+        }
+        
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+
+        .text-white-50 {
+            color: var(--text-muted) !important;
+        }
+
+        .badge {
+            background-color: var(--accent-color); /* Use accent color */
+            color: white;
+        }
+
+        .badge.bg-danger {
+            background-color: var(--danger-color) !important;
+        }
+
+        .form-control {
+            background-color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: var(--text-color);
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background-color: #252525;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(85, 85, 85, 0.5);
+            color: var(--text-color);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-mortarboard-fill"></i> AiuEducation
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/posts/feed">
+                    <i class="bi bi-house-fill"></i> Лента
+                </a>
+                <a class="nav-link" href="/groupchat">
+                    <i class="bi bi-chat-square-text"></i> Общий чат
+                </a>
+                <a class="nav-link" href="/friends">
+                    <i class="bi bi-people"></i> Друзья
+                </a>
+                <a class="nav-link" href="/messages">
+                    <i class="bi bi-chat-dots"></i> Сообщения
+                </a>
+                <a class="nav-link" href="/friends/search">
+                    <i class="bi bi-search"></i> Поиск
+                </a>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i> 
+                        <span th:text="${currentUser.fullName}">Пользователь</span>
+                        <span class="badge bg-danger ms-1" th:if="${currentUser.admin}">Админ</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/profile">
+                            <i class="bi bi-person"></i> Профиль
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="d-inline">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="bi bi-box-arrow-right"></i> Выйти
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Flash Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Back Button -->
+        <div class="mb-3">
+            <a href="/posts/feed" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Вернуться к ленте
+            </a>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- Post -->
+                <div class="card mb-4"
+                     th:classappend="${post.author.admin ? 'admin-post' : ''} + ${post.pinned ? ' pinned-post' : ''} + ${post.highlighted ? ' highlighted-post' : ''}">
+                    
+                    <!-- Pinned Badge -->
+                    <div th:if="${post.pinned}" class="card-header bg-warning text-dark">
+                        <small><i class="bi bi-pin-angle-fill"></i> Закрепленный пост</small>
+                    </div>
+                    
+                    <div class="card-body">
+                        <!-- Post Header -->
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-person-circle fs-3 text-primary me-2"></i>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0">
+                                    <span th:text="${post.author.fullName}">Автор</span>
+                                    <span class="badge bg-danger ms-1" th:if="${post.author.admin}">Админ</span>
+                                </h6>
+                                <small class="text-muted" th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm')}">
+                                    Время публикации
+                                </small>
+                            </div>
+                            
+                            <!-- Admin Actions -->
+                            <div class="dropdown" th:if="${currentUser.admin}">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                                        type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-gear"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li th:if="${!post.pinned}">
+                                        <form th:action="@{/posts/{id}/pin(id=${post.id})}" method="post" class="d-inline">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bi bi-pin"></i> Закрепить
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li th:if="${post.pinned}">
+                                        <form th:action="@{/posts/{id}/unpin(id=${post.id})}" method="post" class="d-inline">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bi bi-pin"></i> Открепить
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Post Actions -->
+                            <div class="dropdown" th:if="${post.author.id == currentUser.id or currentUser.admin}">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle ms-1" 
+                                        type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <form th:action="@{/posts/{id}/delete(id=${post.id})}" method="post" 
+                                              class="d-inline" onsubmit="return confirm('Удалить пост?')">
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="bi bi-trash"></i> Удалить
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Post Content -->
+                        <div class="post-content">
+                            <div th:utext="${post.content}"></div>
+                            <div th:if="${post.imageUrl != null && !post.imageUrl.isEmpty()}" class="mt-3">
+                                <img th:src="${post.imageUrl}" alt="Изображение поста" class="post-image img-fluid rounded">
+                            </div>
+                        </div>
+                        
+                        <!-- Post Stats -->
+                        <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                            <div>
+                                <button class="btn btn-outline-primary">
+                                    <i class="bi bi-heart"></i> Нравится (<span th:text="${post.likesCount}">0</span>)
+                                </button>
+                                <span class="ms-3 text-muted">
+                                    <i class="bi bi-chat"></i> Комментариев: <span th:text="${comments.size()}">0</span>
+                                </span>
+                            </div>
+                            <small class="text-muted" th:if="${post.updatedAt}" 
+                                   th:text="'Изменено: ' + ${#temporals.format(post.updatedAt, 'dd.MM.yyyy HH:mm')}">
+                                Время изменения
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comment Section -->
+                <div class="comments-section mt-4">
+                    <h4 class="mb-3">Комментарии</h4>
+                    
+                    <!-- Comment Form -->
+                    <div class="mb-4">
+                        <h5>Оставить комментарий</h5>
+                        <form th:action="@{/posts/{id}/comment(id=${post.id})}" method="post" class="mb-4">
+                            <div class="mb-3">
+                                <textarea name="content" class="form-control" rows="3" placeholder="Введите ваш комментарий..." required></textarea>
+                            </div>
+                            <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-chat-dots"></i> Отправить
+                            </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Comments List -->
+                    <div th:if="${comments.empty}" class="alert alert-info">
+                        <i class="bi bi-chat-square-text"></i> Еще нет комментариев. Будьте первым!
+                                        </div>
+                                        
+                    <div th:each="comment : ${comments}" class="comment-card" th:classappend="${comment.author.admin ? 'admin-comment' : ''}">
+                        <div class="comment-header">
+                            <div class="comment-avatar">
+                                <i class="bi bi-person-fill"></i>
+                                        </div>
+                            <div>
+                                <a href="#" class="comment-author" th:text="${comment.author.fullName}">Автор комментария</a>
+                                <span class="badge bg-danger ms-1" th:if="${comment.author.admin}">Админ</span>
+                                <small class="comment-time">
+                                    <i class="bi bi-clock me-1"></i><span th:text="${#temporals.format(comment.createdAt, 'dd.MM.yyyy HH:mm')}">время</span>
+                                    </small>
+                            </div>
+                        </div>
+                        <div class="comment-content" th:text="${comment.content}">Текст комментария</div>
+                        <div class="comment-actions">
+                            <form th:action="@{/comments/{commentId}(commentId=${comment.id})}" method="post" class="delete-comment-form" onsubmit="return confirm('Удалить комментарий?')">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-trash me-1"></i>Удалить
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Add smooth scroll to comments section on page load if hash is #comments
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.location.hash === '#comments') {
+                const commentsSection = document.getElementById('comments-section');
+                if (commentsSection) {
+                    commentsSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+
+        // Handle delete comment form submission (optional, for potential dynamic update later)
+        document.querySelectorAll('.delete-comment-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                // Prevent default form submission for now, handle with JS later if needed
+                // e.preventDefault();
+                // const commentCard = this.closest('.comment-card');
+                // if (commentCard) {
+                //     commentCard.remove();
+                // }
+            });
+        });
+    </script>
+</body>
+</html> 

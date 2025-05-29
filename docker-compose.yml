@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # PostgreSQL база данных
+  postgres:
+    image: postgres:15-alpine
+    container_name: vkontakte_db
+    environment:
+      POSTGRES_DB: vkontakte
+      POSTGRES_USER: vkontakte_user
+      POSTGRES_PASSWORD: vkontakte_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - vkontakte_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vkontakte_user -d vkontakte"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # VKontakte Clone приложение
+  app:
+    build: .
+    container_name: vkontakte_app
+    environment:
+      # Настройки базы данных
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/vkontakte
+      SPRING_DATASOURCE_USERNAME: vkontakte_user
+      SPRING_DATASOURCE_PASSWORD: vkontakte_password
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      
+      # JPA настройки
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+      SPRING_JPA_SHOW_SQL: true
+      
+      # Отключаем H2 консоль
+      SPRING_H2_CONSOLE_ENABLED: false
+      
+      # Разрешаем циклические ссылки
+      SPRING_MAIN_ALLOW_CIRCULAR_REFERENCES: true
+      
+      # Настройки сервера
+      SERVER_PORT: 8081
+      
+      # Логирование
+      LOGGING_LEVEL_COM_EXAMPLE_DEMO: INFO
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: WARN
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./src/main/resources/static/images/uploads:/app/src/main/resources/static/images/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - vkontakte_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  vkontakte_network:
+    driver: bridge 

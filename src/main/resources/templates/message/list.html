@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сообщения - AiuEducation</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --card-bg: rgba(255, 255, 255, 0.1);
+        }
+        
+        body {
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Анимированный фон */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: var(--primary-gradient);
+        }
+        
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><radialGradient id="a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,255,255,0.03)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="15" cy="85" r="35" fill="url(%23a)"><animate attributeName="cx" values="15;85;15" dur="30s" repeatCount="indefinite"/></circle><circle cx="85" cy="15" r="30" fill="url(%23a)"><animate attributeName="cy" values="15;85;15" dur="22s" repeatCount="indefinite"/></circle></svg>');
+            animation: float 40s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-60px) rotate(180deg); }
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: var(--card-bg) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Header Section */
+        .header-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Search Section */
+        .search-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: white;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .search-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(79, 172, 254, 0.5);
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
+            color: white;
+        }
+        
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Conversation Cards */
+        .conversation-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .conversation-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .conversation-card:hover::before {
+            left: 100%;
+        }
+        
+        .conversation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .conversation-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--secondary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-right: 1rem;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .online-indicator {
+            width: 16px;
+            height: 16px;
+            background: #4CAF50;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .conversation-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .conversation-name {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .conversation-preview {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .conversation-time {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+        }
+        
+        .conversation-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+        }
+        
+        .unread-badge {
+            background: var(--accent-gradient);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-5px); }
+            60% { transform: translateY(-3px); }
+        }
+        
+        .admin-badge {
+            background: var(--secondary-gradient);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        /* Stats Cards */
+        .stats-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stats-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        .stats-icon.total { background: var(--accent-gradient); }
+        .stats-icon.unread { background: var(--warning-gradient); }
+        .stats-icon.online { background: var(--success-gradient); }
+        
+        .stats-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stats-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        /* Quick Actions */
+        .quick-action-btn {
+            background: var(--success-gradient);
+            border: none;
+            border-radius: 20px;
+            padding: 12px 25px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(67, 233, 123, 0.3);
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .quick-action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(67, 233, 123, 0.4);
+            color: white;
+        }
+        
+        /* Filter Buttons */
+        .filter-btn {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 8px 16px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--accent-gradient);
+            border-color: transparent;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-section, .search-section, .conversation-card {
+                margin-left: -15px;
+                margin-right: -15px;
+                border-radius: 0;
+            }
+            
+            .conversation-card {
+                padding: 1rem;
+            }
+            
+            .conversation-avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-mortarboard-fill"></i> AiuEducation
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link text-white" href="/posts/feed">
+                    <i class="bi bi-house-fill"></i> Лента
+                </a>
+                <a class="nav-link text-white" href="/friends">
+                    <i class="bi bi-people"></i> Друзья
+                </a>
+                <a class="nav-link active text-white" href="/messages">
+                    <i class="bi bi-chat-dots"></i> Сообщения
+                </a>
+                <a class="nav-link text-white" href="/friends/search">
+                    <i class="bi bi-search"></i> Поиск
+                </a>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i> 
+                        <span th:text="${currentUser.fullName}">Пользователь</span>
+                        <span class="badge bg-danger ms-1" th:if="${currentUser.admin}">Админ</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/profile">
+                            <i class="bi bi-person"></i> Профиль
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="d-inline">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="bi bi-box-arrow-right"></i> Выйти
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Flash Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert" data-aos="fade-down">
+            <i class="bi bi-check-circle"></i> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert" data-aos="fade-down">
+            <i class="bi bi-exclamation-triangle"></i> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Header Section -->
+        <div class="header-section" data-aos="fade-up">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="text-white mb-3" style="font-weight: 700;">
+                        <i class="bi bi-chat-dots me-2"></i>Сообщения
+                    </h2>
+                    <p class="text-white-50 mb-0">Общайтесь с друзьями в реальном времени</p>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <a href="/friends/search" class="quick-action-btn">
+                        <i class="bi bi-plus-circle me-2"></i>Новый чат
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row mb-4">
+            <div class="col-lg-4 col-md-6 mb-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="stats-card">
+                    <div class="stats-icon total">
+                        <i class="bi bi-chat-dots"></i>
+                    </div>
+                    <div class="stats-number" th:text="${conversationPartners != null ? conversationPartners.size() : 0}">0</div>
+                    <div class="stats-label">Диалогов</div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="stats-card">
+                    <div class="stats-icon unread">
+                        <i class="bi bi-envelope"></i>
+                    </div>
+                    <div class="stats-number" th:text="${unreadCount ?: 0}">0</div>
+                    <div class="stats-label">Непрочитанных</div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="stats-card">
+                    <div class="stats-icon online">
+                        <i class="bi bi-circle-fill"></i>
+                    </div>
+                    <div class="stats-number" th:text="${conversationPartners != null && conversationPartners.size() > 0 ? (conversationPartners.size() * 0.4).intValue() : 0}">0</div>
+                    <div class="stats-label">Онлайн</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="search-section" data-aos="fade-up">
+            <div class="row align-items-center mb-3">
+                <div class="col-md-8">
+                    <input type="text" 
+                           class="form-control search-input" 
+                           id="conversationSearch"
+                           placeholder="Поиск по имени или сообщениям...">
+                </div>
+                <div class="col-md-4 mt-3 mt-md-0">
+                    <div class="text-md-end">
+                        <button class="filter-btn active" data-filter="all">Все</button>
+                        <button class="filter-btn" data-filter="unread">Непрочитанные</button>
+                        <button class="filter-btn" data-filter="online">Онлайн</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conversations List -->
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div th:if="${conversationPartners != null and !conversationPartners.empty}">
+                    <div th:each="partner, iterStat : ${conversationPartners}" 
+                         class="conversation-card conversation-item" 
+                         data-aos="fade-up" 
+                         th:attr="data-aos-delay=${iterStat.index * 50}"
+                         th:data-name="${partner.fullName.toLowerCase()}"
+                         th:data-unread="false"
+                         th:data-online="${iterStat.index % 4 == 0}"
+                         th:onclick="'window.location.href=\'/messages/conversation/' + ${partner.id} + '\''">
+                        
+                        <div class="d-flex align-items-center">
+                            <!-- Avatar -->
+                            <div class="conversation-avatar">
+                                <i class="bi bi-person-fill"></i>
+                                <!-- Online Indicator -->
+                                <div class="online-indicator" th:if="${iterStat.index % 4 == 0}"></div>
+                            </div>
+                            
+                            <!-- Conversation Info -->
+                            <div class="conversation-info">
+                                <div class="conversation-name">
+                                    <span th:text="${partner.fullName}">Имя собеседника</span>
+                                    <span th:if="${partner.admin}" class="admin-badge">
+                                        <i class="bi bi-shield-check me-1"></i>Админ
+                                    </span>
+                                </div>
+                                
+                                <div class="conversation-preview">
+                                    <i class="bi bi-chat-dots me-1"></i>Начните диалог
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Empty State -->
+                <div th:if="${conversationPartners == null or conversationPartners.empty}" class="empty-state" data-aos="fade-up">
+                    <div class="empty-icon">
+                        <i class="bi bi-chat-dots"></i>
+                    </div>
+                    <h4 class="text-white mb-3">У вас пока нет диалогов</h4>
+                    <p class="text-white-50 mb-4">
+                        Найдите друзей и начните общение
+                    </p>
+                    <a href="/friends/search" class="quick-action-btn">
+                        <i class="bi bi-search me-2"></i>Найти друзей
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // Инициализация AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+        
+        // Поиск и фильтрация диалогов
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('conversationSearch');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const conversationItems = document.querySelectorAll('.conversation-item');
+            
+            let currentFilter = 'all';
+            
+            function filterConversations() {
+                const searchTerm = searchInput.value.toLowerCase();
+                
+                conversationItems.forEach(item => {
+                    const name = item.getAttribute('data-name');
+                    const isUnread = item.getAttribute('data-unread') === 'true';
+                    const isOnline = item.getAttribute('data-online') === 'true';
+                    
+                    const matchesSearch = name.includes(searchTerm);
+                    let matchesFilter = true;
+                    
+                    switch (currentFilter) {
+                        case 'unread':
+                            matchesFilter = isUnread;
+                            break;
+                        case 'online':
+                            matchesFilter = isOnline;
+                            break;
+                        default:
+                            matchesFilter = true;
+                    }
+                    
+                    if (matchesSearch && matchesFilter) {
+                        item.style.display = 'block';
+                        item.style.animation = 'fadeInUp 0.5s ease-out';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // Показать/скрыть сообщение "не найдено"
+                const visibleItems = Array.from(conversationItems).filter(item => item.style.display !== 'none');
+                updateEmptyState(visibleItems.length === 0 && conversationItems.length > 0);
+            }
+            
+            function updateEmptyState(show) {
+                let emptyMessage = document.getElementById('searchEmptyState');
+                
+                if (show && !emptyMessage) {
+                    emptyMessage = document.createElement('div');
+                    emptyMessage.id = 'searchEmptyState';
+                    emptyMessage.className = 'col-12';
+                    emptyMessage.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="bi bi-search"></i>
+                            </div>
+                            <h4 class="text-white mb-3">Диалоги не найдены</h4>
+                            <p class="text-white-50">
+                                Попробуйте изменить критерии поиска
+                            </p>
+                        </div>
+                    `;
+                    document.querySelector('.row:last-child').appendChild(emptyMessage);
+                } else if (!show && emptyMessage) {
+                    emptyMessage.remove();
+                }
+            }
+            
+            // Обработчики событий
+            searchInput.addEventListener('input', filterConversations);
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.getAttribute('data-filter');
+                    filterConversations();
+                });
+            });
+            
+            // Анимация при наведении на карточки
+            document.querySelectorAll('.conversation-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+            
+            // Анимация счетчиков
+            function animateCounters() {
+                const counters = document.querySelectorAll('.stats-number');
+                
+                counters.forEach(counter => {
+                    const target = parseInt(counter.textContent);
+                    const duration = 1500;
+                    const step = target / (duration / 16);
+                    let current = 0;
+                    
+                    const timer = setInterval(() => {
+                        current += step;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        counter.textContent = Math.floor(current);
+                    }, 16);
+                });
+            }
+            
+            // Запуск анимации счетчиков при загрузке
+            setTimeout(animateCounters, 500);
+            
+            // Автофокус на поле поиска
+            searchInput.focus();
+        });
+        
+        // Параллакс эффект для фона
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.animated-bg');
+            const speed = scrolled * 0.3;
+            parallax.style.transform = `translateY(${speed}px)`;
+        });
+        
+        // Эффект пульсации для онлайн индикаторов
+        document.querySelectorAll('.online-indicator').forEach(indicator => {
+            setInterval(() => {
+                indicator.style.animation = 'none';
+                setTimeout(() => {
+                    indicator.style.animation = 'pulse 2s infinite';
+                }, 10);
+            }, 6000);
+        });
+        
+        // Эффект подпрыгивания для непрочитанных сообщений
+        document.querySelectorAll('.unread-badge').forEach(badge => {
+            setInterval(() => {
+                badge.style.animation = 'none';
+                setTimeout(() => {
+                    badge.style.animation = 'bounce 2s infinite';
+                }, 10);
+            }, 8000);
+        });
+        
+        // Обновление времени в реальном времени
+        function updateTimeStamps() {
+            const timeElements = document.querySelectorAll('.conversation-time span');
+            timeElements.forEach(element => {
+                // Здесь можно добавить логику обновления времени
+                // Например, показывать "только что", "5 минут назад" и т.д.
+            });
+        }
+        
+        // Обновляем время каждую минуту
+        setInterval(updateTimeStamps, 60000);
+    </script>
+</body>
+</html> 
