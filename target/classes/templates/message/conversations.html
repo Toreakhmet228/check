@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сообщения - VKontakte Clone</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: #111;
+            color: #fff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar, .bg-primary {
+            background: #222 !important;
+            color: #fff !important;
+        }
+        .navbar-brand, .nav-link, .dropdown-item {
+            color: #fff !important;
+        }
+        .navbar .dropdown-menu {
+            background: #222;
+        }
+        .navbar .dropdown-item:hover {
+            background: #333;
+        }
+        .footer, footer, .bg-light {
+            background: #181818 !important;
+            color: #fff !important;
+        }
+        .card, .conversation-card, .bg-light {
+            background: #181818 !important;
+            color: #fff !important;
+            border: none !important;
+        }
+        .btn, .btn-primary {
+            background: #fff !important;
+            color: #111 !important;
+            border: none !important;
+        }
+        .btn:hover, .btn-primary:hover {
+            background: #333 !important;
+            color: #fff !important;
+        }
+        .alert-success {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+        .alert {
+            border: none;
+        }
+        .conversation-card {
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        
+        .conversation-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: #4267B2 !important;
+        }
+        
+        .unread-badge {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-people-fill"></i> VKontakte Clone
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/posts/feed">
+                    <i class="bi bi-house-fill"></i> Лента
+                </a>
+                <a class="nav-link" href="/friends">
+                    <i class="bi bi-people"></i> Друзья
+                </a>
+                <a class="nav-link active" href="/messages">
+                    <i class="bi bi-chat-dots"></i> Сообщения
+                </a>
+                <a class="nav-link" href="/friends/search">
+                    <i class="bi bi-search"></i> Поиск
+                </a>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i> 
+                        <span th:text="${currentUser.fullName}">Пользователь</span>
+                        <span class="badge bg-danger ms-1" th:if="${currentUser.admin}">Админ</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/profile">
+                            <i class="bi bi-person"></i> Профиль
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="d-inline">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="bi bi-box-arrow-right"></i> Выйти
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Flash Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="bi bi-chat-dots"></i> Сообщения
+                <span class="badge bg-danger ms-2" th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
+            </h2>
+            <a href="/friends" class="btn btn-primary">
+                <i class="bi bi-people"></i> Мои друзья
+            </a>
+        </div>
+
+        <!-- Conversations List -->
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div th:if="${!conversationPartners.empty}">
+                    <div th:each="partner : ${conversationPartners}" class="card conversation-card mb-3"
+                         th:onclick="'window.location.href=\'/messages/conversation/' + ' + ${partner.id}'">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person-circle fs-2 text-primary me-3"></i>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">
+                                        <span th:text="${partner.fullName}">Имя собеседника</span>
+                                        <span class="badge bg-danger ms-1" th:if="${partner.admin}">Админ</span>
+                                    </h6>
+                                    <small class="text-muted" th:text="${partner.role.displayName}">Роль</small>
+                                    <p class="small text-muted mb-0" th:text="${partner.bio}" th:if="${partner.bio}">
+                                        Биография
+                                    </p>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge unread-badge" th:if="${unreadCount > 0}">
+                                        Новые
+                                    </span>
+                                    <div class="mt-1">
+                                        <i class="bi bi-chevron-right text-muted"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- No Conversations Message -->
+                <div th:if="${conversationPartners.empty}" class="text-center py-5">
+                    <i class="bi bi-chat-dots fs-1 text-muted"></i>
+                    <h4 class="text-muted mt-3">У вас пока нет диалогов</h4>
+                    <p class="text-muted">Начните общение с друзьями!</p>
+                    <a href="/friends" class="btn btn-primary">
+                        <i class="bi bi-people"></i> Перейти к друзьям
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="row mt-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-info-circle"></i> Как начать общение?
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-3">
+                                <i class="bi bi-person-plus fs-1 text-primary mb-2"></i>
+                                <h6>1. Добавьте друзей</h6>
+                                <p class="small text-muted">Найдите интересных людей и отправьте им запрос в друзья</p>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <i class="bi bi-check-circle fs-1 text-success mb-2"></i>
+                                <h6>2. Дождитесь принятия</h6>
+                                <p class="small text-muted">После того как запрос будет принят, вы станете друзьями</p>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <i class="bi bi-chat fs-1 text-info mb-2"></i>
+                                <h6>3. Начните общение</h6>
+                                <p class="small text-muted">Отправляйте сообщения и ведите интересные беседы</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

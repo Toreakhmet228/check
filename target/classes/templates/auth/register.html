@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация - AiuEducation</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #333;
+            --accent-color: #555;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-color: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        body {
+            background-color: var(--primary-color);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+        }
+
+        .register-container {
+            min-height: 100vh;
+            background-color: var(--primary-color); /* Убираем градиент */
+            padding: 20px 0;
+        }
+        
+        .register-card {
+            max-width: 500px;
+            margin: 0 auto;
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background-color: var(--secondary-color);
+        }
+        
+        .register-header {
+            background-color: var(--accent-color) !important; /* Меняем фон хедера */
+            color: white;
+            border-radius: 15px 15px 0 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .role-card {
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+        
+        .role-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-color: var(--accent-color);
+        }
+        
+        .role-card.selected {
+            border-color: var(--accent-color);
+            background-color: rgba(85, 85, 85, 0.2); /* Немного темнее для выделения */
+        }
+        
+        .form-label {
+            color: var(--text-color);
+        }
+
+        .form-control {
+            background-color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: var(--text-color);
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background-color: #252525;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(85, 85, 85, 0.5);
+            color: var(--text-color);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-text {
+            color: var(--text-muted);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #666;
+            border-color: #666;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .btn-outline-primary {
+             color: var(--accent-color);
+             border-color: var(--accent-color);
+        }
+        
+        .btn-outline-primary:hover {
+             background-color: var(--accent-color);
+             color: white;
+        }
+
+        .alert-success {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border-color: rgba(40, 167, 69, 0.3);
+        }
+
+        .alert-danger {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border-color: rgba(220, 53, 69, 0.3);
+        }
+        
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+
+        .text-primary {
+            color: var(--accent-color) !important;
+        }
+
+        .text-info {
+             color: var(--text-muted) !important; /* Используем приглушенный цвет для info */
+        }
+        
+        .text-white {
+            color: white !important;
+        }
+
+        hr {
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container d-flex align-items-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card register-card">
+                        <div class="card-header register-header text-center py-4">
+                            <p class="mb-0 mt-2">Создайте новый аккаунт</p>
+                        </div>
+                        
+                        <div class="card-body p-4">
+                            <div class="text-center mb-4">
+                                <i class="bi bi-mortarboard-fill text-primary" style="font-size: 3rem;"></i>
+                                <h2 class="mt-3 text-white">AiuEducation</h2>
+                                <p class="text-muted">Присоединяйтесь к образовательному сообществу</p>
+                            </div>
+                            <form th:action="@{/register}" method="post" th:object="${user}">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="firstName" class="form-label">
+                                            <i class="bi bi-person"></i> Имя *
+                                        </label>
+                                        <input type="text" class="form-control" id="firstName" 
+                                               th:field="*{firstName}" required>
+                                        <div class="text-danger" th:if="${#fields.hasErrors('firstName')}" 
+                                             th:errors="*{firstName}"></div>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="lastName" class="form-label">
+                                            <i class="bi bi-person"></i> Фамилия *
+                                        </label>
+                                        <input type="text" class="form-control" id="lastName" 
+                                               th:field="*{lastName}" required>
+                                        <div class="text-danger" th:if="${#fields.hasErrors('lastName')}" 
+                                             th:errors="*{lastName}"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">
+                                        <i class="bi bi-at"></i> Имя пользователя *
+                                    </label>
+                                    <input type="text" class="form-control" id="username" 
+                                           th:field="*{username}" required>
+                                    <div class="form-text">Минимум 3 символа</div>
+                                    <div class="text-danger" th:if="${#fields.hasErrors('username')}" 
+                                         th:errors="*{username}"></div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">
+                                        <i class="bi bi-envelope"></i> Email *
+                                    </label>
+                                    <input type="email" class="form-control" id="email" 
+                                           th:field="*{email}" required>
+                                    <div class="text-danger" th:if="${#fields.hasErrors('email')}" 
+                                         th:errors="*{email}"></div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">
+                                        <i class="bi bi-lock"></i> Пароль *
+                                    </label>
+                                    <input type="password" class="form-control" id="password" 
+                                           th:field="*{password}" required>
+                                    <div class="form-text">Минимум 6 символов</div>
+                                    <div class="text-danger" th:if="${#fields.hasErrors('password')}" 
+                                         th:errors="*{password}"></div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="form-label">
+                                        <i class="bi bi-shield-check"></i> Выберите роль *
+                                    </label>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <div class="card role-card h-100" onclick="selectRole('ADMIN')">
+                                                <div class="card-body text-center">
+                                                    <input type="radio" name="role" value="ADMIN" 
+                                                           th:field="*{role}" id="roleAdmin" class="d-none">
+                                                    <i class="bi bi-shield-check text-primary fs-2"></i>
+                                                    <h6 class="mt-2 text-white">Администратор</h6>
+                                                    <small class="text-muted">
+                                                        Дополнительные возможности управления
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6 mb-2">
+                                            <div class="card role-card h-100" onclick="selectRole('STUDENT')">
+                                                <div class="card-body text-center">
+                                                    <input type="radio" name="role" value="STUDENT" 
+                                                           th:field="*{role}" id="roleStudent" class="d-none" checked>
+                                                    <i class="bi bi-person text-info fs-2"></i>
+                                                    <h6 class="mt-2 text-white">Ученик</h6>
+                                                    <small class="text-muted">
+                                                        Стандартные возможности пользователя
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="bio" class="form-label">
+                                        <i class="bi bi-card-text"></i> О себе
+                                    </label>
+                                    <textarea class="form-control" id="bio" th:field="*{bio}" 
+                                              rows="3" placeholder="Расскажите немного о себе..."></textarea>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="bi bi-person-plus"></i> Зарегистрироваться
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <hr class="my-4">
+                            
+                            <div class="text-center">
+                                <p class="mb-0">Уже есть аккаунт?</p>
+                                <a href="/login" class="btn btn-outline-primary">
+                                    <i class="bi bi-box-arrow-in-right"></i> Войти
+                                </a>
+                            </div>
+                            
+                            <div class="text-center mt-3">
+                                <a href="/" class="text-muted">
+                                    <i class="bi bi-arrow-left"></i> Вернуться на главную
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function selectRole(role) {
+            // Убираем выделение со всех карточек
+            document.querySelectorAll('.role-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Выделяем выбранную карточку
+            event.currentTarget.classList.add('selected');
+            
+            // Устанавливаем значение радио-кнопки
+            document.getElementById('role' + role.charAt(0) + role.slice(1).toLowerCase()).checked = true;
+        }
+        
+        // Устанавливаем начальное выделение
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkedRole = document.querySelector('input[name="role"]:checked');
+            if (checkedRole) {
+                const roleValue = checkedRole.value;
+                const roleCard = checkedRole.closest('.role-card');
+                if (roleCard) {
+                    roleCard.classList.add('selected');
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

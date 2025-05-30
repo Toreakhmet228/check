@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} ?: 'VKontakte Clone'">VKontakte Clone</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: #111;
+            color: #fff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar, .bg-primary {
+            background: #222 !important;
+            color: #fff !important;
+        }
+        .navbar-brand, .nav-link, .dropdown-item {
+            color: #fff !important;
+        }
+        .navbar .dropdown-menu {
+            background: #222;
+        }
+        .navbar .dropdown-item:hover {
+            background: #333;
+        }
+        .footer, footer, .bg-light {
+            background: #181818 !important;
+            color: #fff !important;
+        }
+        .alert-success {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+        .alert {
+            border: none;
+        }
+        .admin-post {
+            border-left: 4px solid #dc3545;
+            background-color: #fff5f5;
+        }
+        
+        .pinned-post {
+            border-top: 3px solid #ffc107;
+            background-color: #fffbf0;
+        }
+        
+        .highlighted-post {
+            box-shadow: 0 0 10px rgba(220, 53, 69, 0.3);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: #4267B2 !important;
+        }
+        
+        .post-card {
+            transition: transform 0.2s;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .friend-request-badge {
+            background-color: #dc3545;
+        }
+        
+        .message-badge {
+            background-color: #198754;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-people-fill"></i> VKontakte Clone
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" href="/posts/feed">
+                            <i class="bi bi-house-fill"></i> Лента
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" href="/friends">
+                            <i class="bi bi-people"></i> Друзья
+                            <span class="badge friend-request-badge ms-1" th:if="${friendRequestCount > 0}" th:text="${friendRequestCount}"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" href="/messages">
+                            <i class="bi bi-chat-dots"></i> Сообщения
+                            <span class="badge message-badge ms-1" th:if="${unreadMessageCount > 0}" th:text="${unreadMessageCount}"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" href="/friends/search">
+                            <i class="bi bi-search"></i> Поиск людей
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> 
+                            <span sec:authentication="principal.fullName">Пользователь</span>
+                            <span class="badge bg-danger ms-1" sec:authorize="hasRole('ADMIN')">Админ</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/profile">
+                                <i class="bi bi-person"></i> Профиль
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="d-inline">
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="bi bi-box-arrow-right"></i> Выйти
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" href="/login">Войти</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" href="/register">Регистрация</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mt-4">
+        <!-- Flash Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <!-- Page Content -->
+        <div layout:fragment="content">
+            <!-- Content will be inserted here -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center text-muted py-3 mt-5">
+        <div class="container">
+            <p>&copy; 2024 VKontakte Clone. Социальная сеть для обучения.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
